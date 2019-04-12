@@ -32,8 +32,7 @@ public class UDPClient {
 			// Print client information
 			System.out.printf("Connecting to %s with IP address %s using UDP on Port %s at %s %n", host, address, port, timestamp);
 
-			// TODO: Client is started
-			System.exit(1);
+			// Start sending data to server
 		}
 		catch(SocketException se) {
 			se.printStackTrace();

@@ -1,5 +1,6 @@
 package UDP;
 
+import java.io.IOException;
 import java.net.*;
 import java.util.Scanner;
 /**
@@ -27,8 +28,8 @@ public class UDPServer {
 			System.out.printf("IP Hostname: %s %n", hostname);
 			System.out.printf("Running UDP on Port %s %n", port);
 
-			// TODO: Server is started but need to connect multiple clients
-			System.exit(1);
+			// Start listening for data sent from client
+			init();
 		}
 		catch(SocketException se) {
 			se.printStackTrace();
@@ -38,6 +39,59 @@ public class UDPServer {
 			uhe.printStackTrace();
 			System.exit(1);
 		}
+	}
+
+	/**
+	 * Starts the server to listen to a client sending data over UDP
+	 */
+	private void init() {
+		boolean stop = false; // Flag for stopping server
+		byte[] buffer = new byte[256]; // Maximum size of message to be received
+
+		while(!stop) {
+			// Setup DatagramPacket to receive request
+			DatagramPacket data = new DatagramPacket( buffer, buffer.length);
+			try {
+				serverSocket.receive( data );
+			}
+			catch(IOException ioe) {
+				ioe.printStackTrace();
+				System.exit(1);
+			}
+
+			// TODO: figure out what this means
+			String received = new String( data.getData(), 0, data.getLength());
+
+			// Get data information
+			InetAddress address = data.getAddress();
+			int port = data.getPort();
+
+			// Setup DatagramPacket to send response b
+			data = new DatagramPacket( buffer, buffer.length, address, port );
+
+			// Check contents of received
+
+			if(received.equals("end")) {
+				stop = true;
+				return;
+			}
+
+			// Send response
+			try {
+				serverSocket.send( data );
+			}
+			catch(IOException ioe) {
+				ioe.printStackTrace();
+				System.exit(1);
+			}
+
+			// Clear buffer
+			buffer = new byte[256];
+		}
+
+		// Close socket
+		serverSocket.close();
+		System.exit(1);
 	}
 
 	public static void main(String[] args) { 
