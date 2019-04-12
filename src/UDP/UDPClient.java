@@ -1,12 +1,14 @@
+package UDP;
+
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 /**
- *  UDP Client
+ * UDP Client
  * 
  * @author Xin Liu
  */
 public class UDPClient {
-	private DatagramSocket ds;
+	private DatagramSocket ds; // Client socket for UDP
 	
 	public UDPClient() {
 
