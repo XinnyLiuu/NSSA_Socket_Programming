@@ -8,12 +8,12 @@ import java.util.Scanner;
  * @author Xin Liu
  */
 public class UDPServer {
-	private DatagramSocket ds; // Server socket for UDP
+	private DatagramSocket serverSocket; // Server socket for UDP
 
 	public UDPServer(int port) {
 		try {
 			// Create UDP server socket
-			ds = new DatagramSocket( port );
+			serverSocket = new DatagramSocket( port );
 
 			// Get IP address of server
 			InetAddress ip = InetAddress.getLocalHost();
@@ -47,7 +47,7 @@ public class UDPServer {
 		// Placeholder for user input
 		String input = "";
 
-		// Prompt for port
+		// Prompt for port for server to start
 		System.out.println("Enter Port: ");
 		input = scn.nextLine().trim();
 
@@ -63,6 +63,5 @@ public class UDPServer {
 			nfe.printStackTrace();
 			System.exit(1);
 		}
-
 	}
 }
