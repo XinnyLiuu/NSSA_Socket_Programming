@@ -59,7 +59,8 @@ public class TCPServer {
         }
 
         @Override
-        public void run() {
+        public void run()
+        {
             try
             {
                 //print out connection info
@@ -77,12 +78,23 @@ public class TCPServer {
                     //send message to client
                     out.println(message);
                     out.flush();
+
+                    if(message.equals("end"))
+                    {
+                        break;
+                    }
                 }
+
+                in.close();
+                out.close();
+                socket.close();
             }
             catch(IOException e)
             {
-                System.out.println("Error receiving message");
+                System.out.println("Disconnect");
             }
+
+            System.out.println("Thread done");
         }
     }
 

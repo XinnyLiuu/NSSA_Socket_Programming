@@ -61,6 +61,24 @@ public class TCPClient
         }
     }
 
+    /**
+     * Closes client
+     */
+    public void close()
+    {
+        try
+        {
+            out.close();
+            in.close();
+            socket.close();
+
+        }
+        catch(IOException e)
+        {
+            System.out.println("Error closing");
+        }
+    }
+
     public static void main(String args[])
     {
         //setup
@@ -110,6 +128,9 @@ public class TCPClient
                 TCPClient client = new TCPClient(IPOrHostname, portNum);
                 String timestamp = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
 
+                //TODO: fix IP printing
+                //TODO: understand why it doesn't work with JARs?
+
                 System.out.println("Connecting to " + IPOrHostname +
                         " with IP address " + IPAddr.getHostAddress() + " using " +
                         connType.toUpperCase() + " on Port " + port + " at " + timestamp);
@@ -121,6 +142,12 @@ public class TCPClient
                         String time = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
                         System.out.println(time + " " + str);
                     });
+
+                    if(msg.equals("end"))
+                    {
+                        client.close();
+                        break;
+                    }
                 }
 
             }
