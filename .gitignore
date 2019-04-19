@@ -1,2 +1,4 @@
 .idea
 output
+*.class
+.DS_Store

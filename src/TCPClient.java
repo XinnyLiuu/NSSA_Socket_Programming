@@ -1,34 +1,63 @@
+import java.io.*;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
+import java.util.function.Consumer;
 
 /**
-    Creates and runs a client that makes TCP connections
+ *  Creates and runs a client that makes TCP connections
  */
 public class TCPClient
 {
     //instance variables
-    private String IP, hostname;
-    private int port;
+    Socket socket;
+    InetAddress IP;
+    PrintWriter out;
+    BufferedReader in;
 
     /**
      * Constructor using IP address
      * @param IPOrHost - ip address or hostname as a string
      * @param port - port number
-     * @param type - the type of identification for the server; acceptable
-     *             options are "i" for IP and "h" for host name
+     * @throws IllegalArgumentException
      */
-    public TCPClient(String IPOrHost, int port, char type) throws IllegalArgumentException
+    public TCPClient(String IPOrHost, int port) throws IllegalArgumentException
     {
-        if(type == 'i')
+        try
         {
-
+            this.IP = InetAddress.getByName(IPOrHost);
+            this.socket = new Socket(IP, port);
+            this.out = new PrintWriter( socket.getOutputStream(), true );
+            this.in = new BufferedReader( new InputStreamReader(socket.getInputStream()) );
         }
-        else if(type == 'h')
+        catch(UnknownHostException e)
         {
-
+            throw new IllegalArgumentException("Unknown host");
         }
-        else
+        catch(IOException e)
         {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Could not connect with given parameters");
+        }
+    }
+
+    /**
+     * Sends a message across the connection if there is a connection
+     * @param message - the message to send
+     */
+    public void sendMessage(String message, Consumer<String> callback)
+    {
+        try
+        {
+            this.out.println(message);
+            String msg = this.in.readLine();
+            callback.accept(msg);
+        }
+        catch(IOException e)
+        {
+            System.out.println("Could not receive response");
         }
     }
 
@@ -36,29 +65,21 @@ public class TCPClient
     {
         //setup
         Scanner s = new Scanner(System.in);
-        String IPQuery = "\\d{1,3}.\\d{1,3}.\\d{1,3}.\\d{1,3}";
-        char type = 'h';
 
         //get name or IP
         System.out.println("Enter the name or IP address of the Server:");
-        String IPOrHost = s.nextLine();
+        String IPOrHostname = "192.168.0.8";//s.nextLine();
 
         //error checking
-        while(IPOrHost.isEmpty())
+        while(IPOrHostname.isEmpty())
         {
             System.out.println("Please enter a non-empty name or IP address of the Server:");
-            IPOrHost = s.nextLine();
-        }
-
-        //change type to an IP if it matches IP pattern
-        if(IPOrHost.matches(IPQuery))
-        {
-            type = 'i';
+            IPOrHostname = s.nextLine();
         }
 
         //get type
         System.out.println("Enter TCP or UDP:");
-        String connType = s.nextLine();
+        String connType = "TCP";//s.nextLine();
 
         //error checking
         while(!connType.equalsIgnoreCase("TCP") && !connType.equalsIgnoreCase("UDP"))
@@ -69,7 +90,7 @@ public class TCPClient
 
         //get port
         System.out.println("Enter Port:");
-        String port = s.nextLine();
+        String port = "1000";//s.nextLine();
         int portNum = Integer.parseInt(port);
 
         //error checking
@@ -85,21 +106,31 @@ public class TCPClient
         {
             try
             {
-                TCPClient client = new TCPClient(IPOrHost,8080, type);
+                InetAddress IPAddr = InetAddress.getByName(IPOrHostname);
+                TCPClient client = new TCPClient(IPOrHostname, portNum);
+                String timestamp = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
 
-                //TODO: get IP based on hostname
-                String IP = "";
+                System.out.println("Connecting to " + IPOrHostname +
+                        " with IP address " + IPAddr.getHostAddress() + " using " +
+                        connType.toUpperCase() + " on Port " + port + " at " + timestamp);
 
-                //TODO: make timestamp
-                String timestamp = "";
+                while(true)
+                {
+                    String msg = s.nextLine();
+                    client.sendMessage(msg, (str) -> {
+                        String time = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
+                        System.out.println(time + " " + str);
+                    });
+                }
 
-                System.out.println("Connecting to " + IPOrHost +
-                        " with IP address " + IP + " using " + connType.toUpperCase() +
-                        " on Port " + port + " at " + timestamp);
             }
             catch (IllegalArgumentException e)
             {
                 System.out.println("Could not connect with the given parameters");
+            }
+            catch(UnknownHostException e)
+            {
+                System.out.println("Unknown host provided");
             }
         }
         else

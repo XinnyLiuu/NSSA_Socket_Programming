@@ -1,5 +1,11 @@
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
+import java.net.Socket;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 
 /**
@@ -7,7 +13,6 @@ import java.util.Scanner;
  */
 public class TCPServer {
     //instance variables
-    private int port;
     private ServerSocket serverSocket;
     
     /**
@@ -18,16 +23,66 @@ public class TCPServer {
     {
         try
         {
-            serverSocket = new ServerSocket(port);
-            this.port = port;
-        }
-        catch(IllegalArgumentException e)
-        {
-            throw new IllegalArgumentException();
+            this.serverSocket = new ServerSocket(port);
+
+            //print out server info
+            System.out.println("IP Address: " + serverSocket.getInetAddress().getHostAddress());
+            System.out.println("IP Hostname: " + serverSocket.getInetAddress().getHostName());
+            System.out.println("Running TCP on Port " + serverSocket.getLocalPort());
+
+            while(true)
+                new ConnectionThread(serverSocket.accept()).start();
         }
         catch(IOException e)
         {
             throw new IllegalArgumentException();
+        }
+    }
+
+    private static class ConnectionThread extends Thread
+    {
+        private Socket socket;
+        private PrintWriter out;
+        private BufferedReader in;
+
+        public ConnectionThread(Socket socket) {
+            try
+            {
+                this.socket = socket;
+                this.in = new BufferedReader( new InputStreamReader(socket.getInputStream()));
+                this.out = new PrintWriter(socket.getOutputStream());
+            }
+            catch(IOException e)
+            {
+                System.out.println("Could not connect with client on" + socket.getInetAddress().getHostAddress());
+            }
+        }
+
+        @Override
+        public void run() {
+            try
+            {
+                //print out connection info
+                String timestamp = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
+                System.out.println(timestamp + " New connection from: " + this.socket.getInetAddress().getHostAddress());
+
+                String message;
+                while ((message = in.readLine()) != null)
+                {
+                    //echo message to console
+                    timestamp = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
+                    System.out.println("Sending to client: " + this.socket.getInetAddress().getHostAddress() +
+                            " " + timestamp + " " + message);
+
+                    //send message to client
+                    out.println(message);
+                    out.flush();
+                }
+            }
+            catch(IOException e)
+            {
+                System.out.println("Error receiving message");
+            }
         }
     }
 
@@ -38,7 +93,7 @@ public class TCPServer {
 
         //get type
         System.out.println("Enter TCP or UDP:");
-        String connType = s.nextLine();
+        String connType = "TCP";//s.nextLine();
 
         //error checking
         while(!connType.equalsIgnoreCase("TCP") && !connType.equalsIgnoreCase("UDP"))
@@ -49,7 +104,7 @@ public class TCPServer {
 
         //get port
         System.out.println("Enter Port:");
-        String port = s.nextLine();
+        String port = "1000";//s.nextLine();
         int portNum = Integer.parseInt(port);
 
         //error checking
@@ -65,18 +120,7 @@ public class TCPServer {
         {
             try
             {
-                TCPServer server = new TCPServer(8080);
-
-                //TODO: get IP and hostname
-                String IP = "";
-                String hostname = "";
-
-                //TODO: make timestamp
-                String timestamp = "";
-
-                System.out.println("IP Address: " + IP);
-                System.out.println("IP Hostname: " + hostname);
-                System.out.println("Running " + connType + " on Port " + portNum);
+                TCPServer server = new TCPServer(portNum);
             }
             catch (IllegalArgumentException e)
             {
