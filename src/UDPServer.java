@@ -92,7 +92,7 @@ public class UDPServer {
 		String input = "";
 
 		// Prompt for port for server to start
-		System.out.println("Enter Port: ");
+		System.out.printf("Enter Port: ");
 		input = scn.nextLine().trim();
 
 		// Check if input is a number

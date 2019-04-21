@@ -83,7 +83,7 @@ public class UDPClient {
 		scn = new Scanner( System.in );
 
 		// Prompt for name or IP address of server
-		System.out.println("Enter the name or IP address of the Server: ");
+		System.out.printf("Enter the name or IP address of the Server: ");
 		String host = scn.nextLine().trim();
 
 		// Check host for errors
@@ -93,7 +93,7 @@ public class UDPClient {
 		}
 
 		// Prompt for port number
-		System.out.println("Enter Port: ");
+		System.out.printf("Enter Port: ");
 		String port = scn.nextLine().trim();
 
 		// Check if port is number
