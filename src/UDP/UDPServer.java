@@ -51,13 +51,12 @@ public class UDPServer {
 	}
 
 	/**
-	 * Starts the server to listen to a client sending data over UDP
+	 * Starts the server to listen to a client sending request over UDP and sending a response in return
 	 */
 	private void init() throws IOException {
-		boolean stop = false; // Flag for stopping server
 		byte[] buffer = new byte[256]; // Maximum size of message to be received
 
-		while(!stop) {
+		while(true) {
 			// Get timestamp
 			String timestamp = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
 
@@ -72,9 +71,6 @@ public class UDPServer {
 			// Check received data
 			String received = new String( request.getData(), 0, request.getLength());
 			System.out.printf("%s %s client %s %n", timestamp, received, address);
-			if(received.equals("end")) {
-				stop = true;
-			}
 
 			// Prepare echo with timestamp as response
 			String echo = timestamp + " " + received;
@@ -87,10 +83,6 @@ public class UDPServer {
 			// Clear buffer for next read
 			buffer = new byte[256];
 		}
-
-		// Close socket
-		serverSocket.close();
-		System.exit(1);
 	}
 
 	public static void main(String[] args) { 

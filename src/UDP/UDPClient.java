@@ -1,11 +1,7 @@
 package UDP;
 
-import org.omg.CORBA.UNKNOWN;
-
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+import java.io.IOException;
+import java.net.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
@@ -16,7 +12,7 @@ import java.util.Scanner;
  */
 public class UDPClient {
 	private DatagramSocket clientSocket; // Client socket for UDP
-	private InetAddress address; // Server address
+	private static Scanner scn; // Read user inputs
 	
 	public UDPClient(String host, int port) {
 		try {
@@ -24,7 +20,7 @@ public class UDPClient {
 			clientSocket = new DatagramSocket();
 
 			// Get IP address of server
-			address = InetAddress.getByName(host);
+			InetAddress address = InetAddress.getByName(host);
 
 			// Get current timestamp
 			String timestamp = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
@@ -33,6 +29,13 @@ public class UDPClient {
 			System.out.printf("Connecting to %s with IP address %s using UDP on Port %s at %s %n", host, address, port, timestamp);
 
 			// Start sending data to server
+			try {
+				init(address, port);
+			}
+			catch(IOException ioe) {
+				ioe.printStackTrace();
+				System.exit(1);
+			}
 		}
 		catch(SocketException se) {
 			se.printStackTrace();
@@ -44,9 +47,41 @@ public class UDPClient {
 		}
 	}
 
+	/**
+	 * Starts the client to send request to a server over UDP and listens to a response in return
+	 */
+	private void init(InetAddress address, int port) throws IOException {
+		byte[] buffer; // Size of message
+		boolean stop = false; // Flag to stop client on "end"
+
+		while(!stop) {
+			// Get input
+			String input = scn.nextLine();
+			if(input.equals("end")) { // On "end", kill the connection
+				stop = true;
+			}
+
+			// Get timestamp
+			String timestamp = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
+
+			// Convert string input into bytes
+			buffer = input.getBytes();
+
+			// Setup DatagramPacket to send input
+			DatagramPacket message = new DatagramPacket( buffer, buffer.length, address, port );
+			clientSocket.send( message );
+			System.out.printf("%s %s %n", timestamp, input);
+		}
+
+		// Close socket, scanner and exit
+		clientSocket.close();
+		scn.close();
+		System.exit(1);
+	}
+
 	public static void main(String[] args) {
 		// Start scanner to read in user input
-		Scanner scn = new Scanner( System.in );
+		scn = new Scanner( System.in );
 
 		// Prompt for name or IP address of server
 		System.out.println("Enter the name or IP address of the Server: ");
