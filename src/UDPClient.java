@@ -1,10 +1,9 @@
-package UDP;
-
 import java.io.IOException;
 import java.net.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
+
 /**
  * UDP Client
  * 
