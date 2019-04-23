@@ -24,7 +24,7 @@ public class ServerMain {
 		try {
 			port = Integer.parseInt(input);
 			if(port < 0 || port > 655355) {
-				System.out.println("Please enter a valid port number! (Between 0 and 65535, inclusively");
+				System.out.println("Please enter a valid port number! (Between 0 and 65535, inclusively)");
 				System.exit(1);
 			}
 		}
