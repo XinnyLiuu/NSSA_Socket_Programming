@@ -86,7 +86,7 @@ public class ClientMain
         }
         else
         {
-            new UDPClient(IPOrHostname, Integer.parseInt(port));
+            new UDPClient(IPOrHostname, portNum, s);
         }
     }
 }

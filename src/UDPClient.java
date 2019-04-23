@@ -13,8 +13,10 @@ public class UDPClient {
 	private DatagramSocket clientSocket; // Client socket for UDP
 	private static Scanner scn; // Read user inputs
 	
-	public UDPClient(String host, int port) {
+	public UDPClient(String host, int port, Scanner s) {
 		try {
+			this.scn = s;
+
 			// Create UDP client socket
 			clientSocket = new DatagramSocket();
 
@@ -100,7 +102,7 @@ public class UDPClient {
 		try {
 			if(Integer.parseInt(port) > 0) {
 				// Create the client
-				new UDPClient(host, Integer.parseInt(port));
+				new UDPClient(host, Integer.parseInt(port), scn);
 			}
 		}
 		catch(NumberFormatException nfe) {
