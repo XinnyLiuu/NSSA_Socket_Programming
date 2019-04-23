@@ -41,6 +41,9 @@ public class TCPServer {
         }
     }
 
+    /**
+     * Thread that handles a new connection to the server
+     */
     private static class ConnectionThread extends Thread
     {
         private Socket socket;

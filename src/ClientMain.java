@@ -12,37 +12,37 @@ public class ClientMain
         Scanner s = new Scanner(System.in);
 
         //get name or IP
-        System.out.println("Enter the name or IP address of the Server:");
-        String IPOrHostname = s.nextLine();
+        System.out.print("Enter the name or IP address of the Server: ");
+        String IPOrHostname = s.nextLine().trim();
 
         //error checking
         while(IPOrHostname.isEmpty())
         {
-            System.out.println("Please enter a non-empty name or IP address of the Server:");
-            IPOrHostname = s.nextLine();
+            System.out.print("Please enter a non-empty name or IP address of the Server: ");
+            IPOrHostname = s.nextLine().trim();
         }
 
         //get type
-        System.out.println("Enter TCP or UDP:");
-        String connType = s.nextLine();
+        System.out.print("Enter TCP or UDP: ");
+        String connType = s.nextLine().trim();
 
         //error checking
         while(!connType.equalsIgnoreCase("TCP") && !connType.equalsIgnoreCase("UDP"))
         {
-            System.out.println("Please enter TCP or UDP:");
-            connType = s.nextLine();
+            System.out.print("Please enter TCP or UDP: ");
+            connType = s.nextLine().trim();
         }
 
         //get port
-        System.out.println("Enter Port:");
-        String port = s.nextLine();
+        System.out.print("Enter Port: ");
+        String port = s.nextLine().trim();
         int portNum = Integer.parseInt(port);
 
         //error checking
         while(portNum <= 0 || portNum > 65535 )
         {
-            System.out.println("Please enter a valid Port number between 1 and 65535:");
-            port = s.nextLine();
+            System.out.print("Please enter a valid Port number between 1 and 65535: ");
+            port = s.nextLine().trim();
             portNum = Integer.parseInt(port);
         }
 
