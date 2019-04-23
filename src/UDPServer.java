@@ -2,7 +2,6 @@ import java.io.IOException;
 import java.net.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Scanner;
 
 /**
  * UDP Server
@@ -81,31 +80,6 @@ public class UDPServer {
 
 			// Clear buffer for next read
 			buffer = new byte[256];
-		}
-	}
-
-	public static void main(String[] args) { 
-		// Start scanner to read in user input
-		Scanner scn = new Scanner( System.in );
-
-		// Placeholder for user input
-		String input = "";
-
-		// Prompt for port for server to start
-		System.out.printf("Enter Port: ");
-		input = scn.nextLine().trim();
-
-		// Check if input is a number
-		try {
-			int port = Integer.parseInt(input);
-			if(port > 0) {
-				// Create the server
-				new UDPServer( port );
-			}
-		}
-		catch(NumberFormatException nfe) {
-			nfe.printStackTrace();
-			System.exit(1);
 		}
 	}
 }
