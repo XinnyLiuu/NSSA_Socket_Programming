@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
@@ -24,10 +25,11 @@ public class TCPServer {
         try
         {
             this.serverSocket = new ServerSocket(port);
+            InetAddress localhost = InetAddress.getLocalHost();
 
             //print out server info
-            System.out.println("IP Address: " + serverSocket.getInetAddress().getHostAddress());
-            System.out.println("IP Hostname: " + serverSocket.getInetAddress().getHostName());
+            System.out.println("IP Address: " + localhost.getHostAddress());
+            System.out.println("IP Hostname: " + localhost.getHostName());
             System.out.println("Running TCP on Port " + serverSocket.getLocalPort());
 
             while(true)
@@ -105,7 +107,7 @@ public class TCPServer {
 
         //get type
         System.out.println("Enter TCP or UDP:");
-        String connType = "TCP";//s.nextLine();
+        String connType = s.nextLine();
 
         //error checking
         while(!connType.equalsIgnoreCase("TCP") && !connType.equalsIgnoreCase("UDP"))
@@ -116,7 +118,7 @@ public class TCPServer {
 
         //get port
         System.out.println("Enter Port:");
-        String port = "1000";//s.nextLine();
+        String port = s.nextLine();
         int portNum = Integer.parseInt(port);
 
         //error checking
